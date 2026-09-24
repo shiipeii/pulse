@@ -1,0 +1,19 @@
+# Runs Pulse's frequent jobs every 10 minutes: read the shared mailbox and
+# classify waiting feedback. (Vercel's free plan only allows daily crons.)
+# Set two repository secrets: PULSE_URL (e.g. https://pulse-abc.vercel.app)
+# and CRON_SECRET (same value as the CRON_SECRET env var in Vercel).
+name: Pulse schedule
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch: {}
+jobs:
+  frequent:
+    runs-on: ubuntu-latest
+    if: ${{ vars.PULSE_SCHEDULE_ENABLED != 'false' }}
+    steps:
+      - name: Mailbox + classify
+        run: |
+          if [ -z "${{ secrets.PULSE_URL }}" ]; then echo "PULSE_URL not set; skipping"; exit 0; fi
+          curl -fsS -X POST "${{ secrets.PULSE_URL }}/api/cron/frequent" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" --max-time 290
