@@ -1,0 +1,12 @@
+name = "pulse-email-worker"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+
+# Set with: wrangler secret put PULSE_INGEST_URL / INGEST_MASTER_SECRET
+# PULSE_INGEST_URL  = https://your-pulse-app/api/ingest/email
+# INGEST_MASTER_SECRET = (must match the Pulse app's INGEST_MASTER_SECRET)
+
+# Bind this worker as the catch-all handler for the inbound subdomain in the
+# Cloudflare dashboard: Email → Email Routing → Catch-all → Send to a Worker.
+# Each Pulse email channel gets a unique <slug>@inbox.<domain>; this worker
+# forwards by the `to` address and Pulse resolves slug → channel.
