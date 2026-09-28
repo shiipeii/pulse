@@ -1,8 +1,21 @@
 # Changes
 
+## v0.4 — Role-based homes and master view (Phase E, part 1)
+
+Everyone now lands on a home built for their role after signing in. No database change is needed.
+
+- **Admin → Master view** (`/`): every feature in Pulse laid out along the flow (Collect → Classify and review → Group and rank → Decide and act → Close the loop → Report and oversee). For each feature it shows who uses it, when, and whether it's ready or still needs a key or approval. Also includes a setup check, source health, and what isn't built yet.
+- **View as:** an admin can see Pulse exactly as a PM, engineer or stakeholder sees it (menu, pages, buttons and permissions), with a banner and a "Back to admin" button. It can only lower access, never raise it.
+- **PM → Needs a decision:** alerts for critical bugs (last 7 days) and regressions; the 14-day decision rate against its 85% target, with the "Not now" guard; everything waiting (review queue, ticket drafts, reports to send, themes with no decision for 14+ days); top of the backlog; AI suggested actions; and whether each source is still flowing in (last item date, "quiet" after 14 days).
+- **Engineer → My bugs:** bugs being fixed and bugs assigned, each with a reproduction summary (device and browser mix, where it happens, trend, screenshots, teachers' words, AI suggestion), plus one-click **Start fix** and **Confirm on production → Fixed**. There's also a "No owner yet" list with **Take it**.
+- **Stakeholder → Summary:** volume, decision rate, teachers told, source coverage, top 3 problems and requests, what changed in 30 days, and the move to one channel. It never shows names, emails or teachers' words.
+- **Menus per role** and **"When Pulse needs you"** on every home: what each role does daily, weekly, monthly or on an event.
+- **Access per role:** stakeholders can't open pages that show raw reports (review, search, activity, channels, sources, tickets, dashboard), and on theme pages they see summaries only. Engineers can't open channels, import or staff. Only admins can open staff.
+- The previous dashboard moved to `/dashboard`.
+
 ## v0.3 — Phase B (teacher loop) + Phase C (coverage and automation)
 
-Requirement IDs refer to `docs/PRD-v0.2.md`.
+Requirement IDs refer to `docs/PRD-v0.3.md`.
 
 ### Phase B — teacher loop
 - **Teacher sign-in with an MOE email link** (FR-50). Allowed domains are a setting (`ALLOWED_EMAIL_DOMAINS`, default `moe.edu.sg,moe.gov.sg`). Uses Supabase's built-in sign-in email.

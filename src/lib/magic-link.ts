@@ -9,8 +9,10 @@ import { createClient } from "@supabase/supabase-js";
  * Authentication → URL Configuration → Redirect URLs.
  */
 export async function sendMagicLink(email: string, kind: "staff" | "teacher", next: string) {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const env = process.env;
+  const url = env["NEXT_PUBLIC_SUPABASE_URL"] || env["SUPABASE_URL"];
+  const key =
+    env["NEXT_PUBLIC_SUPABASE_ANON_KEY"] || env["SUPABASE_ANON_KEY"] || env["SUPABASE_SERVICE_ROLE_KEY"] || env["SUPABASE_SECRET_KEY"];
   if (!url || !key) throw new Error("Supabase is not configured");
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Nav } from "@/components/Nav";
-import { getSession } from "@/lib/auth-server";
-import { gateEnabled } from "@/lib/session";
+import { getStaff } from "@/lib/auth-server";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -10,8 +9,9 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const s = await getSession();
-  const staff = s?.kind === "staff" ? { name: s.name || s.email, role: s.role ?? "stakeholder" } : !gateEnabled() ? { name: "Local dev", role: "admin" } : null;
+  // Effective role: an admin using "View as" gets that role's menu.
+  const s = await getStaff();
+  const staff = s ? { name: s.name || s.email, role: s.role ?? "stakeholder", viewingAs: s.viewingAs } : null;
   return (
     <html lang="en">
       <body>

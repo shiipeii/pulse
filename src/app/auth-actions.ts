@@ -7,6 +7,7 @@ import { sendMagicLink } from "@/lib/magic-link";
 import { SESSION_COOKIE, SESSION_DAYS, signSession } from "@/lib/session";
 import { adminEmails, isAllowedTeacherEmail, allowedTeacherDomains } from "@/lib/auth-server";
 import type { StaffRole } from "@/lib/types";
+import { VIEW_AS_COOKIE } from "@/lib/roles";
 
 export interface AuthState {
   ok: boolean;
@@ -93,6 +94,7 @@ export async function passwordLogin(_prev: AuthState, fd: FormData): Promise<Aut
 
 export async function signOut(): Promise<void> {
   cookies().delete(SESSION_COOKIE);
+  cookies().delete(VIEW_AS_COOKIE);
   redirect("/login");
 }
 

@@ -12,6 +12,8 @@ let _admin: SupabaseClient | null = null;
 export function supabaseAdmin(): SupabaseClient {
   if (_admin) return _admin;
 
+  // Read at runtime (not baked in at build) and accept the names Vercel's
+  // Supabase integration uses.
   const env = process.env;
   const url = env["NEXT_PUBLIC_SUPABASE_URL"] || env["SUPABASE_URL"];
   const key = env["SUPABASE_SERVICE_ROLE_KEY"] || env["SUPABASE_SECRET_KEY"];

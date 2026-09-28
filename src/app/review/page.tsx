@@ -50,7 +50,7 @@ export default async function ReviewPage({
 
       {items.length === 0 && (
         <div className="card p-8 text-center text-sm text-slate-500">
-          All caught up — nothing to review. <Link href="/" className="text-pulse-600 hover:underline">Back to dashboard</Link>
+          All caught up — nothing to review. <Link href="/" className="text-pulse-600 hover:underline">Back to home</Link>
         </div>
       )}
 

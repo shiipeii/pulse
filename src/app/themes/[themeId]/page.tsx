@@ -4,6 +4,7 @@ import { getProduct } from "@/lib/product";
 import { getThemeWithItems, getThemeEvidence, getAttachmentsFor } from "@/lib/queries";
 import { supabaseRead } from "@/lib/supabase";
 import { getStaff } from "@/lib/auth-server";
+import { canSeeNames } from "@/lib/roles";
 import { signedViewUrls } from "@/lib/storage";
 import { SeverityBadge, SentimentBadge, Tag, CategoryBadge, ClassificationTrail } from "@/components/badges";
 import { setThemeStatus, setThemeOwner, moveItem, splitItem, mergeTheme } from "@/app/actions";
@@ -50,6 +51,8 @@ export default async function ThemePage({
   const staff = await getStaff();
   const edit = canEdit(staff?.role);
   const manage = canManage(staff?.role);
+  // Stakeholders see summaries only: no teacher words, names or screenshots.
+  const names = canSeeNames(staff?.role);
 
   const db = supabaseRead();
   const [evidence, { data: stats }, { data: ticket }, { data: siblings }, { data: notes }, att] = await Promise.all([
@@ -69,7 +72,7 @@ export default async function ThemePage({
   return (
     <div className="space-y-6">
       <Link href="/" className="text-sm text-pulse-600 hover:underline">
-        ← Back to dashboard
+        ← Back to home
       </Link>
 
       <div className="card space-y-4 p-6">
@@ -163,9 +166,9 @@ export default async function ThemePage({
                     <span className="ml-auto text-xs text-slate-400">{new Date(f.received_at).toLocaleString("en-SG")}</span>
                   </div>
                   {f.summary && <p className="text-sm font-medium text-ink">{f.summary}</p>}
-                  <p className="mt-1 whitespace-pre-wrap text-sm text-slate-600">{f.raw_text}</p>
-                  {f.author && <p className="mt-1 text-xs text-slate-400">— {f.author}</p>}
-                  {(att.get(f.id) ?? []).length > 0 && (
+                  {names && <p className="mt-1 whitespace-pre-wrap text-sm text-slate-600">{f.raw_text}</p>}
+                  {names && f.author && <p className="mt-1 text-xs text-slate-400">— {f.author}</p>}
+                  {names && (att.get(f.id) ?? []).length > 0 && (
                     <div className="mt-2 flex gap-2">
                       {(att.get(f.id) ?? []).map((p) =>
                         urls[p] ? (
