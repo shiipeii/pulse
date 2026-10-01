@@ -2,32 +2,18 @@ import "server-only";
 import { cookies } from "next/headers";
 import { SESSION_COOKIE, verifySession, gateEnabled, type Session } from "./session";
 import type { StaffRole } from "./types";
-import { VIEW_AS_COOKIE, PREVIEWABLE } from "./roles";
 
 /** Current session from the cookie (or null). */
 export async function getSession(): Promise<Session | null> {
   return verifySession(cookies().get(SESSION_COOKIE)?.value);
 }
 
-/** The signed-in staff member with their real role (ignores "View as"). */
-export async function getRealStaff(): Promise<Session | null> {
+/** Staff session, or an implicit admin when the gate is off (local dev). */
+export async function getStaff(): Promise<Session | null> {
   const s = await getSession();
   if (s?.kind === "staff") return s;
   if (!gateEnabled()) return { email: "local-dev", kind: "staff", role: "admin", name: "Local dev", exp: Infinity };
   return null;
-}
-
-/**
- * Staff session as the app should treat it. When an admin uses "View as", the
- * whole app (menu, home, buttons and permissions) behaves as that role, so the
- * preview is faithful. View as can only lower access, never raise it.
- */
-export async function getStaff(): Promise<(Session & { viewingAs?: StaffRole }) | null> {
-  const s = await getRealStaff();
-  if (!s || s.role !== "admin") return s;
-  const v = cookies().get(VIEW_AS_COOKIE)?.value as StaffRole | undefined;
-  if (v && PREVIEWABLE.includes(v)) return { ...s, role: v, viewingAs: v };
-  return s;
 }
 
 export class ForbiddenError extends Error {}
