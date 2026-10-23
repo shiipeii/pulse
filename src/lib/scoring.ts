@@ -119,6 +119,13 @@ export const QUADRANT_LABEL: Record<Quadrant, string> = {
   fill_in: "Fill-ins",
   not_worth_it: "Not worth it",
 };
+/** Singular, for one issue: "Quick win · Bug". */
+export const QUADRANT_SHORT: Record<Quadrant, string> = {
+  quick_win: "Quick win",
+  big_bet: "Big bet",
+  fill_in: "Fill-in",
+  not_worth_it: "Not worth it",
+};
 export const QUADRANT_HINT: Record<Quadrant, string> = {
   quick_win: "High impact, little work. Do these first.",
   big_bet: "High impact, a lot of work. Plan them.",

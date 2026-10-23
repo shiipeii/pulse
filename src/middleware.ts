@@ -29,7 +29,7 @@ const BLOCKED: Record<StaffRole, string[]> = {
   admin: [],
   pm: ["/admin"],
   engineer: ["/admin", "/channels", "/import"],
-  stakeholder: ["/admin", "/review", "/search", "/api/search", "/activity", "/channels", "/import", "/sources", "/tickets", "/dashboard"],
+  stakeholder: ["/admin", "/review", "/search", "/api/search", "/activity", "/channels", "/import", "/sources", "/tickets", "/dashboard", "/priorities"],
 };
 
 export async function middleware(req: NextRequest) {

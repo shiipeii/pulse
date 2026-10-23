@@ -37,6 +37,7 @@ export const ROLE_INFO: Record<StaffRole, RoleInfo> = {
     uses: "When setting up, when someone joins, and a monthly check",
     nav: [
       { href: "/", label: "Master view" },
+      { href: "/priorities", label: "Priorities" },
       { href: "/dashboard", label: "Dashboard" },
       { href: "/backlog", label: "Backlog" },
       { href: "/review", label: "Review" },
@@ -77,6 +78,7 @@ export const ROLE_INFO: Record<StaffRole, RoleInfo> = {
     uses: "Every day for a few minutes, plus Monday and month-end routines",
     nav: [
       HOME,
+      { href: "/priorities", label: "Priorities" },
       { href: "/review", label: "Review" },
       { href: "/backlog", label: "Backlog" },
       { href: "/tickets", label: "Tickets" },
@@ -124,6 +126,7 @@ export const ROLE_INFO: Record<StaffRole, RoleInfo> = {
     nav: [
       { href: "/", label: "My bugs" },
       { href: "/backlog?kind=bug", label: "All bugs" },
+      { href: "/priorities", label: "Priorities" },
       { href: "/tickets", label: "Tickets" },
       { href: "/search", label: "Search" },
     ],
