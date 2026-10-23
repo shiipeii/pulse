@@ -3,17 +3,19 @@ import type { Product } from "@/lib/types";
 import type { Session } from "@/lib/session";
 import { ROLE_INFO } from "@/lib/roles";
 import { getLeadershipSummary } from "@/lib/home-queries";
-import { STATUS_LABEL, STATUS_STYLE, trend } from "@/lib/ui";
-import { HomeHeader, Rhythm, Stat, DecisionRateCard, Section, Empty, fmtDate } from "./parts";
+import { STATUS_LABEL, STATUS_STYLE } from "@/lib/ui";
+import { getOverview } from "@/lib/overview-queries";
+import { HomeHeader, Rhythm, Section, Empty, fmtDate } from "./parts";
+import { Overview } from "./Overview";
 
 /**
- * Leadership summary: "Are we listening, and what changed?"
- * Read-only, and it never shows teacher names, emails or words.
+ * Leadership summary: "Are we listening, and what changed?" The same
+ * Overview the PM sees, read-only, then what shipped and channel share.
+ * It never shows teacher names, emails or words.
  */
 export async function StakeholderHome({ product, staff }: { product: Product; staff: Session }) {
   const info = ROLE_INFO.stakeholder;
-  const s = await getLeadershipSummary(product.id);
-  const change = s.volumePrev ? Math.round(((s.volume - s.volumePrev) / s.volumePrev) * 100) : null;
+  const [s, overview] = await Promise.all([getLeadershipSummary(product.id), getOverview(product.id)]);
   const maxMonth = Math.max(1, ...s.months.map((m) => m.total));
 
   return (
@@ -26,29 +28,7 @@ export async function StakeholderHome({ product, staff }: { product: Product; st
         )}
       </HomeHeader>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Stat
-          label="Feedback in the last 30 days"
-          value={s.volume}
-          note={change == null ? "No earlier month to compare" : `${change >= 0 ? "↑" : "↓"} ${Math.abs(change)}% vs the 30 days before`}
-        />
-        <DecisionRateCard rate={s.rate} />
-        <Stat
-          label="Teachers told about a fix or release"
-          value={s.told}
-          note={s.wouldTell ? `Last 90 days · ${s.wouldTell} more once email is set up` : "Last 90 days"}
-        />
-        <Stat label="Feedback sources covered" value={`${s.coverage}%`} note="Goal: 100%, so nothing is missed" tone={s.coverage < 100 ? "warn" : "good"} />
-      </div>
-
-      <div className="grid gap-8 lg:grid-cols-2">
-        <Section title="Top 3 problems" subtitle="Open bugs, ranked by how many teachers × how badly">
-          <TopList rows={s.topBugs} empty="No open bugs." />
-        </Section>
-        <Section title="Top 3 requests" subtitle="Feature ideas, ranked by how many teachers asked">
-          <TopList rows={s.topFeatures} empty="No open requests." />
-        </Section>
-      </div>
+      <Overview data={overview} canAct={false} />
 
       <Section title="What changed in the last 30 days" subtitle="Bugs fixed and ideas released">
         {s.shipped.length === 0 ? (
@@ -96,25 +76,5 @@ export async function StakeholderHome({ product, staff }: { product: Product; st
 
       <Rhythm info={info} />
     </div>
-  );
-}
-
-function TopList({ rows, empty }: { rows: Awaited<ReturnType<typeof getLeadershipSummary>>["topBugs"]; empty: string }) {
-  if (rows.length === 0) return <Empty>{empty}</Empty>;
-  return (
-    <ol className="card divide-y divide-slate-100">
-      {rows.map((r, i) => (
-        <li key={r.theme.id} className="flex items-center gap-3 p-3 text-sm">
-          <span className="w-5 text-right font-semibold text-slate-400">{i + 1}</span>
-          <div className="min-w-0 flex-1">
-            <p className="font-medium">{r.theme.label}</p>
-            <p className="text-xs text-slate-500">
-              {r.stats?.reporters ?? r.theme.frequency} teachers · {trend(r.stats?.last7, r.stats?.prev7)}
-            </p>
-          </div>
-          <span className={`badge ${STATUS_STYLE[r.theme.status]}`}>{STATUS_LABEL[r.theme.status]}</span>
-        </li>
-      ))}
-    </ol>
   );
 }
