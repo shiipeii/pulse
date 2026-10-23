@@ -4,6 +4,7 @@ import { purgeScreenshots } from "@/lib/storage";
 import { syncFiledTickets } from "@/lib/tickets";
 import { scheduledReports } from "@/lib/reports";
 import { refreshStaleWeeklyActions } from "@/lib/insights";
+import { rescoreAll } from "@/lib/scoring-run";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -11,7 +12,7 @@ export const maxDuration = 300;
 
 /**
  * Daily housekeeping (Vercel Cron, see vercel.json):
- *   screenshot retention · Jira ticket updates · scheduled reports · suggested actions
+ *   scores (impact, urgency, area) · screenshot retention · Jira ticket updates · scheduled reports · suggested actions
  */
 async function run(req: NextRequest) {
   if (!cronAuthorized(req.headers)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -23,6 +24,7 @@ async function run(req: NextRequest) {
       out[name] = { error: e instanceof Error ? e.message : String(e) };
     }
   };
+  await step("scores", rescoreAll);
   await step("screenshots", purgeScreenshots);
   await step("tickets", syncFiledTickets);
   await step("reports", () => scheduledReports());
