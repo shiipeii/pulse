@@ -2,7 +2,7 @@
   "name": "pulse",
   "version": "0.1.0",
   "private": true,
-  "description": "Pulse — a feedback intelligence system for MOE product teams",
+  "description": "Pulse \u2014 a feedback intelligence system for MOE product teams",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -10,7 +10,8 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "enrich": "node --env-file=.env.local --import tsx scripts/run-enrich.ts",
-    "seed:demo": "node --env-file=.env.local --import tsx scripts/seed-demo.ts"
+    "seed:demo": "node --env-file=.env.local --import tsx scripts/seed-demo.ts",
+    "test": "node --import tsx --test tests/*.test.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",

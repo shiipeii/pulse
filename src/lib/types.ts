@@ -131,6 +131,20 @@ export interface Theme {
   suggestion_at: string | null;
   created_at: string;
   updated_at: string;
+  // Prioritisation layer (migration 0006). Optional: absent until it has run.
+  effort?: "s" | "m" | "l" | "xl" | null;
+  effort_source?: "ai" | "engineer" | "pm" | null;
+  effort_set_by?: string | null;
+  decision?: "now" | "next" | "later" | "not_now" | null;
+  decided_by?: string | null;
+  impact?: number | null;
+  urgent?: boolean;
+  urgent_reason?: string | null;
+  urgent_since?: string | null;
+  urgent_cleared_at?: string | null;
+  area?: string | null;
+  fits_goals?: boolean;
+  scored_at?: string | null;
 }
 
 /** Normalised output of a decoder — the canonical shape ingest inserts. */

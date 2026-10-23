@@ -2,6 +2,7 @@ import { supabaseAdmin } from "./supabase";
 import { draftTicketText } from "./anthropic";
 import { commentOnJiraIssue, jiraConfigured } from "./jira";
 import type { ThemeStats } from "./types";
+import { rescoreTheme } from "./scoring-run";
 
 /**
  * Automated ticketing (FR-93). A ticket is DRAFTED automatically when a theme
@@ -11,6 +12,8 @@ import type { ThemeStats } from "./types";
 const THRESHOLD = Number(process.env.TICKET_THRESHOLD ?? "5");
 
 export async function afterItemClustered(themeId: string): Promise<void> {
+  // Keep impact and urgency current as each report arrives (spikes need this).
+  await rescoreTheme(themeId).catch(() => undefined);
   await maybeDraftTicket(themeId);
 }
 
